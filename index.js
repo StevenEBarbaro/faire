@@ -1,6 +1,23 @@
 var Hapi = require('hapi'),
     serverConfig = require('./config/config').config,
     server = new Hapi.Server(serverConfig.hostname, serverConfig.port);
+    
+    var devconfig = require('./config/database').config;
+
+    var dbname = devconfig.db;
+    var dbhostname = devconfig.hostname;
+    var dbport = devconfig.port;
+    var dbuser = devconfig.user;
+    var dbpassword = devconfig.password;
+
+    
+    var Sequelize = require("sequelize");
+    
+    var sequelize = new Sequelize(dbname, dbuser, dbpassword, {
+        host: dbhostname,
+        port: dbport
+    });
+            
 
 server.auth('session', {
     scheme: 'cookie',
@@ -22,10 +39,33 @@ var home = function () {
       + '</form></body></html>');
 };
 
+var staticPage = function() {
+    var me = this;
+    
+    sequelize.query("SELECT * FROM tasks ORDER BY created DESC").success(function(myTableRows) {
+        console.log(myTableRows);
+        var result=[];
+        var total = myTableRows.length;
+        myTableRows.forEach(function(element, index) {
+            result.push({
+                id: element.id,
+                body: element.body,
+                created: element.created,
+                state: element.state
+            });
+            
+            if(index == total - 1) {
+                me.reply(result);
+            }    
+        });
+    }).fail(function(err) { console.log(err); });
+}
+    
 server.route([
-  { method: 'GET', path: '/', config: { handler: home, auth: true  } },
+  /*{ method: 'GET', path: '/', config: { handler: home, auth: true  } },
   { method: '*', path: '/login', config: { handler: fauth.login, auth: { mode: 'try' } } },
-  { method: 'GET', path: '/logout', config: { handler: fauth.logout, auth: true } }
+  { method: 'GET', path: '/logout', config: { handler: fauth.logout, auth: true } },*/
+  { method: 'GET', path: '/static', config: { handler: staticPage, auth: false  } }
 ]);
 
 server.start();
