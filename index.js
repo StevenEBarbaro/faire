@@ -1,8 +1,8 @@
-var Hapi = require('hapi');
+var Hapi = require('hapi'),serverConfig = require('./config/config').config,
+server = new Hapi.Server(serverConfig.hostname, serverConfig.port, options);
 
-// Create a server with a host and port
-var server = Hapi.createServer('0.0.0.0', 6131);
 
+    
 // Add the route
 server.route({
     method: 'GET',
