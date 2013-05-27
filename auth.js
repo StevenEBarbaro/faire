@@ -1,4 +1,5 @@
 //dont use the module.exports right now thx
+/*
 module.exports = function() {
   return {
     handler: function(request) {
@@ -6,7 +7,7 @@ module.exports = function() {
     }
   };
 }
-
+*/
 //testing data
 var users = {
     john: {
@@ -22,8 +23,13 @@ exports.login = function () {
   }
   var message = '';
   var account = null;
+  
+
 
   if (this.method === 'post') {
+
+    console.log("un: " + this.payload.username);
+    console.log("pw: " + this.payload.password);
     if (!this.payload.username || !this.payload.password) {
       message = 'Missing username or password';
     } else {

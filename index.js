@@ -4,9 +4,12 @@ var Hapi = require('hapi'),
 
 server.auth('session', {
     scheme: 'cookie',
-    password: 'zxr3rsjoi2r',
-    cookie: 'faire-e-land',
-    redirectTo: '/login'
+    password: 'zxr3rsjoi2r', //TODO: refactor this out to gitignored auth config file
+    cookie: 'faire-e-land',  //?TODO: refactor this out to gitignored auth config file
+    redirectTo: '/login',
+	isSecure: false,
+	ttl: 1800000,
+	clearInvalid: true
 });
 
 var fauth = require('./auth');
@@ -21,7 +24,6 @@ var home = function () {
 
 server.route([
   { method: 'GET', path: '/', config: { handler: home, auth: true  } },
-  { method: 'GET',  path: '/hello', handler: function () { this.reply('hello world'); } },
   { method: '*', path: '/login', config: { handler: fauth.login, auth: { mode: 'try' } } },
   { method: 'GET', path: '/logout', config: { handler: fauth.logout, auth: true } }
 ]);
