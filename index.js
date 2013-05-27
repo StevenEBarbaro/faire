@@ -1,5 +1,6 @@
-var Hapi = require('hapi'),serverConfig = require('./config/config').config,
-server = new Hapi.Server(serverConfig.hostname, serverConfig.port);
+var Hapi = require('hapi'),
+    serverConfig = require('./config/config').config,
+    server = new Hapi.Server(serverConfig.hostname, serverConfig.port);
 
 
     
