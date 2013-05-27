@@ -1,0 +1,20 @@
+{
+  "name": "faire",
+  "version": "0.0.0",
+  "description": "Task list",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github:StevenEBarbaro/faire.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "1666ae1ab72e05ca7855c363e43dbdc4c074afa6",
+  "dependencies": {
+    "hapi": "~1.4.0"
+  }
+}
