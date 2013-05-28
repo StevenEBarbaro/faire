@@ -22,6 +22,7 @@
   "dependencies": {
     "hapi": "git://github.com/spumko/hapi.git",
     "mysql": "~2.0.0-alpha8",
-    "sequelize": "~1.7.0-alpha2"
+    "sequelize": "~1.7.0-alpha2",
+    "handlebars": "~1.0.11"
   }
 }

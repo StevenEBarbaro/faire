@@ -1,22 +1,30 @@
 var Hapi = require('hapi'),
+    options = {
+    	views: {
+			path: 'app/views',
+			engines: {
+				html: 'handlebars'
+			}
+		}
+	},
     serverConfig = require('./config/config').config,
-    server = new Hapi.Server(serverConfig.hostname, serverConfig.port);
+    server = new Hapi.Server(serverConfig.hostname, serverConfig.port, options);
     
-    var devconfig = require('./config/database').config;
+var devconfig = require('./config/database').config;
 
-    var dbname = devconfig.db;
-    var dbhostname = devconfig.hostname;
-    var dbport = devconfig.port;
-    var dbuser = devconfig.user;
-    var dbpassword = devconfig.password;
+var dbname = devconfig.db;
+var dbhostname = devconfig.hostname;
+var dbport = devconfig.port;
+var dbuser = devconfig.user;
+var dbpassword = devconfig.password;
 
-    
-    var Sequelize = require("sequelize");
-    
-    var sequelize = new Sequelize(dbname, dbuser, dbpassword, {
-        host: dbhostname,
-        port: dbport
-    });
+
+var Sequelize = require("sequelize");
+
+var sequelize = new Sequelize(dbname, dbuser, dbpassword, {
+    host: dbhostname,
+    port: dbport
+});
             
 
 server.auth('session', {
@@ -55,12 +63,19 @@ var staticPage = function() {
             });
             
             if(index == total - 1) {
-                me.reply(result);
+                templateStaticPage(me, result);  
             }    
         });
     }).fail(function(err) { console.log(err); });
-}
     
+    //me.reply.view("staticpage.html", {greeting: 'hello world', title: 'test'}).send();
+};
+ 
+var templateStaticPage = function(request, result) { 
+ //request.reply(result);
+ request.reply.view("staticpage.html", {greeting: 'TESTER', title: 'test'});   
+};
+
 server.route([
   /*{ method: 'GET', path: '/', config: { handler: home, auth: true  } },
   { method: '*', path: '/login', config: { handler: fauth.login, auth: { mode: 'try' } } },
