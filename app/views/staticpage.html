@@ -2,14 +2,17 @@
 <html>
     <head>
         <title>
-            {{title}}
+            {{pageTitle}}
         </title>
      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+     <link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
      <link rel="stylesheet" type="text/css" href="main.css">   
     </head>
     
-    
     <body>
-        {{greeting}}
+        <h1>{{contentTitle}}</h1>
+        <div id="content">
+            {{tasks}}    
+        </div>
     </body>
 </html>

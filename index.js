@@ -8,8 +8,10 @@ var Hapi = require('hapi'),
 		}
 	},
     serverConfig = require('./config/config').config,
-    server = new Hapi.Server(serverConfig.hostname, serverConfig.port, options);
-    
+    server = new Hapi.Server(serverConfig.hostname, serverConfig.port, options),
+    Handlebars = require('handlebars');
+ 
+
 var devconfig = require('./config/database').config;
 
 var dbname = devconfig.db;
@@ -27,6 +29,18 @@ var sequelize = new Sequelize(dbname, dbuser, dbpassword, {
 });
             
 
+ var source = "<ul>{{#people}}<li>{{> link}}</li>{{/people}}</ul>";
+
+Handlebars.registerPartial('link', '<a href="/people/{{id}}">{{name}}</a>');
+var template = Handlebars.compile(source);
+
+var data = { 
+    "people": [
+        { "name": "Alan", "id": 1 },
+        { "name": "Yehuda", "id": 2 }
+    ]
+};
+      
 server.auth('session', {
     scheme: 'cookie',
     password: 'zxr3rsjoi2r', //TODO: refactor this out to gitignored auth config file
@@ -52,16 +66,17 @@ var staticPage = function() {
     
     sequelize.query("SELECT * FROM tasks ORDER BY created DESC").success(function(myTableRows) {
         console.log(myTableRows);
-        var result=[];
+        var result = "";
         var total = myTableRows.length;
         myTableRows.forEach(function(element, index) {
-            result.push({
+            /*result.push({
                 id: element.id,
                 body: element.body,
                 created: element.created,
                 state: element.state
-            });
+            });*/
             
+            result += "<div class=\"task\">" + element.body + "</div>";
             if(index == total - 1) {
                 templateStaticPage(me, result);  
             }    
@@ -71,9 +86,9 @@ var staticPage = function() {
     //me.reply.view("staticpage.html", {greeting: 'hello world', title: 'test'}).send();
 };
  
-var templateStaticPage = function(request, result) { 
- //request.reply(result);
- request.reply.view("staticpage.html", {greeting: 'TESTER', title: 'test'});   
+var templateStaticPage = function(request, tasks) { 
+ 
+ request.reply.view("staticpage.html", {tasks: template(data), pageTitle: 'Email Asset creation', contentTitle: 'EMAIL ASSET CREATION CHECKLIST'});   
 };
 
 server.route([
