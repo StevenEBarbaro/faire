@@ -8,10 +8,9 @@ var Hapi = require('hapi'),
 		}
 	},
     serverConfig = require('./config/config').config,
-    server = new Hapi.Server(serverConfig.hostname, serverConfig.port, options),
-    Handlebars = require('handlebars');
+    server = new Hapi.Server(serverConfig.hostname, serverConfig.port, options);
  
-
+/*CONFIG STUFF*/
 var devconfig = require('./config/database').config;
 
 var dbname = devconfig.db;
@@ -20,27 +19,10 @@ var dbport = devconfig.port;
 var dbuser = devconfig.user;
 var dbpassword = devconfig.password;
 
+//Initialize db connection
+var sequelize = require('./lib/db').createSingletonConnection(dbname, dbuser, dbpassword, dbhostname, dbport);
 
-var Sequelize = require("sequelize");
-
-var sequelize = new Sequelize(dbname, dbuser, dbpassword, {
-    host: dbhostname,
-    port: dbport
-});
-            
-
- var source = "<ul>{{#people}}<li>{{> link}}</li>{{/people}}</ul>";
-
-Handlebars.registerPartial('link', '<a href="/people/{{id}}">{{name}}</a>');
-var template = Handlebars.compile(source);
-
-var data = { 
-    "people": [
-        { "name": "Alan", "id": 1 },
-        { "name": "Yehuda", "id": 2 }
-    ]
-};
-      
+//Setup auth rules
 server.auth('session', {
     scheme: 'cookie',
     password: 'zxr3rsjoi2r', //TODO: refactor this out to gitignored auth config file
@@ -51,7 +33,19 @@ server.auth('session', {
 	clearInvalid: true
 });
 
-var fauth = require('./auth');
+
+//var source = "<ul>{{#people}}<li>{{> link}}</li>{{/people}}</ul>";
+//Handlebars.registerPartial('link', '<a href="/people/{{id}}">{{name}}</a>');
+//var template = Handlebars.compile(source);
+
+//var data = { 
+//    "people": [
+//        { "name": "Alan", "id": 1 },
+//        { "name": "Yehuda", "id": 2 }
+//    ]
+//};
+
+
 
 var home = function () {
     this.reply('<html><head><title>Login page</title></head><body><h3>Welcome '
@@ -61,43 +55,8 @@ var home = function () {
       + '</form></body></html>');
 };
 
-var staticPage = function() {
-    var me = this;
-    
-    sequelize.query("SELECT * FROM tasks ORDER BY created DESC").success(function(myTableRows) {
-        console.log(myTableRows);
-        var result = "";
-        var total = myTableRows.length;
-        
-        if(total) {
-            myTableRows.forEach(function(element, index) {
-                /*result.push({
-                    id: element.id,
-                    body: element.body,
-                    created: element.created,
-                    state: element.state
-                });*/
-                
-                result += "<div class=\"task\">" + element.body + "</div>";
-                if(index == total - 1) {
-                    templateStaticPage(me, result);  
-                }    
-            });
-        } else {
-            templateStaticPage(me, {});
-        }
-    }).fail(function(err) { 
-        console.log(err); 
-        templateStaticPage(me, {});
-    });
-    
-    //me.reply.view("staticpage.html", {greeting: 'hello world', title: 'test'}).send();
-};
- 
-var templateStaticPage = function(request, tasks) { 
- 
- request.reply.view("staticpage.html", {tasks: 'test', pageTitle: 'Email Asset creation', contentTitle: 'EMAIL ASSET CREATION CHECKLIST'});   
-};
+var fauth = require('./lib/auth');
+var faire = require('./lib/faire');
 
 server.route([
   { method: '*', path: '/{path*}', handler: { directory: { path: './public/', listing: false } } },
@@ -105,7 +64,8 @@ server.route([
   { method: '*', path: '/login', config: { handler: fauth.login, auth: { mode: 'try' } } },
   { method: 'GET', path: '/logout', config: { handler: fauth.logout, auth: true } },*/
   
-  { method: 'GET', path: '/static', config: { handler: staticPage, auth: false  } }
+  { method: 'GET', path: '/static', config: { handler: faire, auth: false  } }
 ]);
 
 server.start();
+console.log("Server up!");
