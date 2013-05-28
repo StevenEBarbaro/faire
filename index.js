@@ -68,27 +68,35 @@ var staticPage = function() {
         console.log(myTableRows);
         var result = "";
         var total = myTableRows.length;
-        myTableRows.forEach(function(element, index) {
-            /*result.push({
-                id: element.id,
-                body: element.body,
-                created: element.created,
-                state: element.state
-            });*/
-            
-            result += "<div class=\"task\">" + element.body + "</div>";
-            if(index == total - 1) {
-                templateStaticPage(me, result);  
-            }    
-        });
-    }).fail(function(err) { console.log(err); });
+        
+        if(total) {
+            myTableRows.forEach(function(element, index) {
+                /*result.push({
+                    id: element.id,
+                    body: element.body,
+                    created: element.created,
+                    state: element.state
+                });*/
+                
+                result += "<div class=\"task\">" + element.body + "</div>";
+                if(index == total - 1) {
+                    templateStaticPage(me, result);  
+                }    
+            });
+        } else {
+            templateStaticPage(me, {});
+        }
+    }).fail(function(err) { 
+        console.log(err); 
+        templateStaticPage(me, {});
+    });
     
     //me.reply.view("staticpage.html", {greeting: 'hello world', title: 'test'}).send();
 };
  
 var templateStaticPage = function(request, tasks) { 
  
- request.reply.view("staticpage.html", {tasks: template(data), pageTitle: 'Email Asset creation', contentTitle: 'EMAIL ASSET CREATION CHECKLIST'});   
+ request.reply.view("staticpage.html", {tasks: 'test', pageTitle: 'Email Asset creation', contentTitle: 'EMAIL ASSET CREATION CHECKLIST'});   
 };
 
 server.route([
