@@ -77,9 +77,11 @@ var templateStaticPage = function(request, result) {
 };
 
 server.route([
+  { method: '*', path: '/{path*}', handler: { directory: { path: './public/', listing: false } } },
   /*{ method: 'GET', path: '/', config: { handler: home, auth: true  } },
   { method: '*', path: '/login', config: { handler: fauth.login, auth: { mode: 'try' } } },
   { method: 'GET', path: '/logout', config: { handler: fauth.logout, auth: true } },*/
+  
   { method: 'GET', path: '/static', config: { handler: staticPage, auth: false  } }
 ]);
 
