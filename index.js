@@ -2,11 +2,11 @@ var Hapi = require('hapi'),
     options = {
     	views: {
 			path: 'app/views',
-			partialsPath : 'app/views/partials',
 			engines: {
 				html: 'handlebars'
 			}
-		}
+		},
+        cors: true
 	},
     serverConfig = require('./config/config').config,
     server = new Hapi.Server(serverConfig.hostname, serverConfig.port, options);
