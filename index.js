@@ -2,11 +2,11 @@ var Hapi = require('hapi'),
     options = {
     	views: {
 			path: 'app/views',
-			partialsPath : 'app/views/partials',
 			engines: {
 				html: 'handlebars'
 			}
-		}
+		},
+        cors: true
 	},
     serverConfig = require('./config/config').config,
     server = new Hapi.Server(serverConfig.hostname, serverConfig.port, options);
@@ -65,7 +65,9 @@ server.route([
   { method: '*', path: '/login', config: { handler: fauth.login, auth: { mode: 'try' } } },
   { method: 'GET', path: '/logout', config: { handler: fauth.logout, auth: true } },*/
   
-  { method: 'GET', path: '/static', config: { handler: faire, auth: false  } }
+  { method: 'GET', path: '/static', config: { handler: faire.baseHandler, auth: false  } },
+  ,
+  { method: 'GET', path: '/staticTasks', config: { handler: faire.baseData, auth: false  } }
 ]);
 
 server.start();
