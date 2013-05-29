@@ -2,6 +2,7 @@ var Hapi = require('hapi'),
     options = {
     	views: {
 			path: 'app/views',
+			partialsPath: 'app/views/partials',
 			engines: {
 				html: 'handlebars'
 			}
