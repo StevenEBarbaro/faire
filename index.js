@@ -59,6 +59,7 @@ var home = function () {
 
 var fauth = require('./lib/auth');
 var faire = require('./lib/faire');
+var mailer = require('./lib/mail');
 
 server.route([
   { method: '*', path: '/{path*}', handler: { directory: { path: './public/', listing: false } } },
@@ -67,8 +68,11 @@ server.route([
   { method: 'GET', path: '/logout', config: { handler: fauth.logout, auth: true } },*/
   
   { method: 'GET', path: '/static', config: { handler: faire.baseHandler, auth: false  } },
-  ,
-  { method: 'GET', path: '/staticTasks', config: { handler: faire.baseData, auth: false  } }
+  
+  { method: 'GET', path: '/staticTasks', config: { handler: faire.baseData, auth: false  } },
+  { method: 'GET', path: '/confirm/{hashkey}', config: { handler: fauth.confirm, auth: false  } },
+  { method: 'GET', path: '/register', config: { handler: fauth.register, auth: false  } }
+  
 ]);
 
 server.start();

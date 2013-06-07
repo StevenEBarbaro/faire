@@ -1,6 +1,23 @@
 module.exports = function(sequelize, DataTypes) {
     var User = sequelize.define("User", {
-        //id:     DataTypes.STRING
+        userid: {
+			type: DataTypes.STRING(30),
+			validate: {
+				isAlphanumeric: true
+			}
+		},
+		email: {
+			type: DataTypes.STRING(50),
+			validate: {
+				isEmail: true
+			}
+		},
+		salt: {
+			type: DataTypes.STRING(29)
+		},
+		hash: {
+			type: DataTypes.STRING(60)
+		}
     }, {
         freezeTableName: true
     });

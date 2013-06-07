@@ -37,6 +37,9 @@ var models = [
     },  {
         name: "Tasklist",
         file: "tasklist"
+    },  {
+        name: "Metastate",
+        file: "metastate"
     }
 ];
 
@@ -58,7 +61,8 @@ module.exports.init = function(done) {
 		model.Tasklist.hasMany(model.User, { as: 'SharedUser' });
 		model.User.hasMany(model.Tasklist, { as: 'SharedTasklist' });
 		
-		
+		model.User.hasOne(model.Metastate);
+		model.Metastate.belongsTo(model.User);
         
         //ensure tables are created with the fields and associations
         model.User.sync().success(function() {
