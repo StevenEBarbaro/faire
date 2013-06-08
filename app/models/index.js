@@ -50,6 +50,7 @@ models.forEach(function(model) {
 
 
 module.exports.init = function(done) {
+	console.log("app/models/index::init()");
     (function(model) {
         //define all associations
 		model.Tasklist.hasMany(model.Task);
@@ -67,10 +68,14 @@ module.exports.init = function(done) {
         //ensure tables are created with the fields and associations
         model.User.sync().success(function() {
 			model.Tasklist.sync().success(function() {
-				//callback
-				done();
-			}).error(function(error) { /*handle this?*/ });
-        }).error(function(error) { /*handle this?*/ });
+				model.Task.sync().success(function() {
+					model.Metastate.sync().success(function() {
+						//callback
+						done();
+					}).error(function(error) { console.log("Error during Metastate.sync(): " + error); });
+				}).error(function(error) { console.log("Error during Task.sync(): " + error); });
+			}).error(function(error) { console.log("Error during Tasklist.sync(): " + error); });
+        }).error(function(error) { console.log("Error during User.sync(): " + error); });
         
     })(module.exports);
 };

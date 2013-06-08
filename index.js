@@ -21,8 +21,8 @@ var dbport = devconfig.port;
 var dbuser = devconfig.user;
 var dbpassword = devconfig.password;
 
-//Initialize db connection
-var sequelize = require('./lib/db').createSingletonConnection(dbname, dbuser, dbpassword, dbhostname, dbport);
+
+//var sequelize = require('./lib/db').createSingletonConnection(dbname, dbuser, dbpassword, dbhostname, dbport);
 
 //Setup auth rules
 server.auth('session', {
@@ -52,14 +52,13 @@ server.auth('session', {
 var home = function () {
     this.reply('<html><head><title>Login page</title></head><body><h3>Welcome '
       + this.auth.credentials.name
-      + '!</h3><br/><form method="get" action="/logout">'
-      + '<input type="submit" value="Logout">'
-      + '</form></body></html>');
+      + '!</h3><br/><form method="get" action="/logout"><input type="submit" value="Logout"></form></body></html>');
 };
 
 var fauth = require('./lib/auth');
 var faire = require('./lib/faire');
 var mailer = require('./lib/mail');
+
 
 server.route([
   { method: '*', path: '/{path*}', handler: { directory: { path: './public/', listing: false } } },
@@ -71,9 +70,15 @@ server.route([
   
   { method: 'GET', path: '/staticTasks', config: { handler: faire.baseData, auth: false  } },
   { method: 'GET', path: '/confirm/{hashkey}', config: { handler: fauth.confirm, auth: false  } },
-  { method: 'GET', path: '/register', config: { handler: fauth.register, auth: false  } }
+  { method: 'POST', path: '/register', config: { handler: fauth.register, validate: { payload: fauth.register_validate(Hapi) }, auth: false  } }
   
 ]);
 
-server.start();
-console.log("Server up!");
+//Initialize db connection before launching the server
+
+var db = require('./app/models');
+db.init(function() {
+	console.log('database setup complete');
+	server.start();
+	console.log("Server up!");
+});
