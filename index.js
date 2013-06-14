@@ -11,18 +11,6 @@ var Hapi = require('hapi'),
 	},
     serverConfig = require('./config/config').config,
     server = new Hapi.Server(serverConfig.hostname, serverConfig.port, options);
- 
-/*CONFIG STUFF*/
-var devconfig = require('./config/database').config;
-
-var dbname = devconfig.db;
-var dbhostname = devconfig.hostname;
-var dbport = devconfig.port;
-var dbuser = devconfig.user;
-var dbpassword = devconfig.password;
-
-
-//var sequelize = require('./lib/db').createSingletonConnection(dbname, dbuser, dbpassword, dbhostname, dbport);
 
 //Setup auth rules
 server.auth('session', {
