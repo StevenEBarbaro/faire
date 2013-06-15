@@ -20,7 +20,7 @@
   "readmeFilename": "README.md",
   "gitHead": "1666ae1ab72e05ca7855c363e43dbdc4c074afa6",
   "dependencies": {
-    "hapi": "~1.7.x",
+    "hapi": "~1.8.0",
     "mysql": "~2.0.0-alpha8",
     "sequelize": "~1.7.0-alpha2",
     "handlebars": "~1.0.11",
