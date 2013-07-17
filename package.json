@@ -20,12 +20,14 @@
   "readmeFilename": "README.md",
   "gitHead": "1666ae1ab72e05ca7855c363e43dbdc4c074afa6",
   "dependencies": {
-    "hapi": "git://github.com/spumko/hapi.git",
+    "hapi": "~1.8.0",
     "mysql": "~2.0.0-alpha8",
     "sequelize": "~1.7.0-alpha2",
     "handlebars": "~1.0.11",
     "async": "~0.2.9",
-    "bcrypt": "~0.7.5"
+    "bcrypt": "~0.7.5",
+    "nodemailer": "~0.4.4",
+    "scurvy": "0.0.1"
   },
   "devDependencies": {
     "mocha": "~1.10.0"
