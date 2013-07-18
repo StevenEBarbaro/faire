@@ -8,5 +8,22 @@
 
 exports.config = {
   hostname: '0.0.0.0',
-  port: 8000
+  port: 8000,
+  tls: false
 };
+
+exports.mailconfig = {
+  method: 'sendmail',
+  sendmail: {
+    bin: '/usr/sbin/sendmail',
+	from: '"Faire Server" <no-reply@something.com>'
+  }
+};
+
+//If exports.config.tls == true, then the following tlsconfig is required to be uncommented and filled out properly.
+//Keep this commented out if exports.config.tls == false
+//var fs = require('fs');
+//exports.tlsconfig = {
+//  key: fs.readFileSync('/somewhere/fixtures/keys/faire-key.pem'),
+//  cert: fs.readFileSync('/somewhere/fixtures/keys/faire-cert.pem')
+//}

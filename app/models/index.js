@@ -26,20 +26,15 @@ var sequelize = new Sequelize(dbname, dbuser, dbpassword, {
     port: dbport
 });
 
-//list all models that will be loaded
+//list all faire models that will be loaded
 var models = [
-    {
-        name: "User",
-        file: "user"
-    },  {
+	{
         name: "Task",
         file: "task"
-    },  {
+    },
+	{
         name: "Tasklist",
         file: "tasklist"
-    },  {
-        name: "Metastate",
-        file: "metastate"
     }
 ];
 
@@ -48,11 +43,20 @@ models.forEach(function(model) {
     module.exports[model.name] = sequelize.import(__dirname + '/' + model.file); 
 });
 
-
-module.exports.init = function(done) {
+module.exports.init = function(virt_modules, done) {
 	console.log("app/models/index::init()");
+	
+	for (var i = 0; i < virt_modules.length; i++) {
+		virt_modules[i].loadModels(module.exports);
+	}
     (function(model) {
         //define all associations
+		
+		//scurvy associations
+		var scurvy = require('scurvy');
+		scurvy.setupAssociations(model);
+		
+		//faire specific associations
 		model.Tasklist.hasMany(model.Task);
 		model.Task.belongsTo(model.Tasklist, { as: 'List' });
 		
@@ -61,25 +65,23 @@ module.exports.init = function(done) {
 		
 		model.Tasklist.hasMany(model.User, { as: 'SharedUser' });
 		model.User.hasMany(model.Tasklist, { as: 'SharedTasklist' });
-		
-		model.User.hasOne(model.Metastate);
-		model.Metastate.belongsTo(model.User);
         
         //ensure tables are created with the fields and associations
-        model.User.sync().success(function() {
+		
+		//scurvy tables
+		scurvy.setupSync(model, function(err) {
+			if (err) { console.log('Error when trying to sync scurvy tables.'); }
+			
+			//faire specific tables
 			model.Tasklist.sync().success(function() {
 				model.Task.sync().success(function() {
-					model.Metastate.sync().success(function() {
-						//callback
-						done();
-					}).error(function(error) { console.log("Error during Metastate.sync(): " + error); });
+					//callback
+					done();
 				}).error(function(error) { console.log("Error during Task.sync(): " + error); });
 			}).error(function(error) { console.log("Error during Tasklist.sync(): " + error); });
-        }).error(function(error) { console.log("Error during User.sync(): " + error); });
-        
+        });
     })(module.exports);
 };
-
 
 //export the connection
 module.exports.sequelize = sequelize;
